@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday — Pastel Edition</title>
+
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{
+      font-family:'Inter',sans-serif;
+      background:linear-gradient(180deg,#ffeef4,#fff9e6,#e9faff);
+      min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:20px;
+    }
+
+    .card{
+      width:min(820px,95%);
+      background:#ffffffaa;
+      backdrop-filter:blur(12px);
+      border-radius:28px;
+      padding:28px;
+      box-shadow:0 6px 22px rgba(0,0,0,0.08);
+      position:relative;
+      text-align:center;
+      overflow:hidden;
+    }
+
+    h1{
+      font-size:clamp(20px,3.4vw,34px);
+      color:#47404a;
+      font-weight:700;
+      margin-bottom:16px;
+    }
+
+    /* FOTO ANIMASI GEMOY */
+    .top-gallery{
+      display:flex;
+      justify-content:center;
+      gap:18px;
+      margin-bottom:20px;
+    }
+
+    .top-gallery img{
+      width:150px;
+      height:150px;
+      object-fit:cover;
+      border-radius:20px;
+      box-shadow:0 4px 14px rgba(0,0,0,0.15);
+      animation:floaty 3.2s ease-in-out infinite;
+      transition:transform .25s;
+    }
+
+    /* foto kedua agak beda animasinya biar lucu */
+    .top-gallery img:nth-child(2){
+      animation-delay:0.8s;
+    }
+
+    @keyframes floaty{
+      0%{ transform:translateY(0px) rotate(-1.5deg); }
+      50%{ transform:translateY(-8px) rotate(1.5deg); }
+      100%{ transform:translateY(0px) rotate(-1.5deg); }
+    }
+
+    .top-gallery img:hover{
+      transform:scale(1.07);
+    }
+
+    /* PESAN */
+    .message{
+      background:#ffffffcc;
+      padding:20px;
+      border-radius:18px;
+    }
+
+    .text{
+      font-size:clamp(16px,2.4vw,20px);
+      line-height:1.55;
+      color:#433f48;
+      text-align:center;
+    }
+
+    .type{
+      display:inline-block;
+      border-right:3px solid #ff8abf;
+      animation:blink 1s infinite;
+    }
+    @keyframes blink{
+      50%{border-color:transparent}
+    }
+
+    /* HEARTS */
+    canvas.hearts{
+      position:fixed;left:0;top:0;width:100%;height:100%;
+      pointer-events:none;z-index:0;
+    }
+
+    .card{z-index:2}
+  </style>
+</head>
+
+<body>
+  <canvas class="hearts" id="hearts"></canvas>
+
+  <div class="card">
+    <h1>Happy 21st Birthday Sayangku Gantengku Gendutku! 🎉💗</h1>
+
+    <div class="top-gallery">
+      <img src="C:/streamlit-hst-batch/image/32ff542c-6138-4169-938f-8701350a7e97.jpg">
+      <img src="C:/streamlit-hst-batch/image/IMG_0405.PNG">
+    </div>
+
+    <div class="message">
+      <div class="text"><span id="typeText" class="type"></span></div>
+    </div>
+  </div>
+
+  <script>
+    const pesan = `Semoga di umur baru ini kamu makin dewasa, ga egois lagi, makin bisa ngehargain dan ngertiin aku. Semoga kamu selalu sehat, bahagia, rezekinya ngalir lancar, dan dapet kerjaan yang berkah.
+
+Harapanku kamu ga selingkuh, cukup aku satu satunya. Jangan nyakitin aku lagi ya, jangan ngerasa harus selalu menang kek lagi saingan. Ini hubungan sayang, bukan kompetisi. Kita tuh tim, bukan lawan.
+
+Semoga kita makin solid, langgeng, makin ngerti satu sama lain, dan makin bahagia bareng. Love youuu Gantengku mwah ❤️`;
+
+    const typeEl = document.getElementById("typeText");
+    const htmlText = pesan.replace(/\n/g, "<br>");
+
+    function typeWrite(text, speed=21){
+      let i=0;
+      function tick(){
+        typeEl.innerHTML = text.slice(0,i);
+        i++;
+        if(i<=text.length) setTimeout(tick, speed);
+      }
+      tick();
+    }
+
+    /* HEARTS */
+    function floatingHearts(){
+      const c=document.getElementById('hearts');
+      const ctx=c.getContext('2d');
+      let W,H;
+      function resize(){W=c.width=innerWidth;H=c.height=innerHeight}
+      resize();addEventListener('resize',resize);
+
+      const hearts=[];
+      function spawn(){
+        hearts.push({
+          x:Math.random()*W,
+          y:H+20,
+          s:Math.random()*1.4+0.6,
+          v:Math.random()*1+0.5
+        });
+      }
+
+      function draw(){
+        ctx.clearRect(0,0,W,H);
+        ctx.fillStyle='rgba(255,140,170,0.7)';
+
+        hearts.forEach((h,i)=>{
+          h.y -= h.v;
+          ctx.beginPath();
+          ctx.moveTo(h.x,h.y);
+          ctx.bezierCurveTo(h.x-10*h.s,h.y-12*h.s,h.x-22*h.s,h.y+8*h.s,h.x,h.y+18*h.s);
+          ctx.bezierCurveTo(h.x+22*h.s,h.y+8*h.s,h.x+10*h.s,h.y-12*h.s,h.x,h.y);
+          ctx.fill();
+          if(h.y < -30) hearts.splice(i,1);
+        });
+
+        requestAnimationFrame(draw);
+      }
+
+      setInterval(spawn,280);
+      draw();
+    }
+
+    window.onload = ()=>{
+      typeWrite(htmlText);
+      floatingHearts();
+    };
+  </script>
+</body>
+</html>
